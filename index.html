@@ -1,41 +1,282 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Three Panel Layout</title>
 
-  <!-- CSS FILE -->
-  <link rel="stylesheet" href="style.css" />
+<head>
+    <meta charset="UTF-8">
+    <title>Closest Pair of Points Virtual Lab</title>
+
+    <style>
+        /* Modern Reset & Base Styles */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Inter, system-ui, sans-serif;
+            min-height: 100vh;
+            background-image: url("background.jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: #333;
+        }
+
+        /* Layout - CSS Grid for optimal widths */
+        .container {
+            display: grid;
+            grid-template-columns: 280px 1fr 280px;
+            /* Fixed sidebars, flexible center */
+            gap: 24px;
+            width: 100%;
+            height: 100vh;
+            padding: 24px;
+            overflow: hidden;
+            /* Prevent body scroll if panels scroll */
+        }
+
+        /* Responsive Layout */
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 1fr;
+                height: auto;
+                overflow: visible;
+            }
+
+            .panel {
+                height: auto;
+                max-height: 600px;
+                /* Cap height on mobile */
+            }
+        }
+
+        /* Panel Styling */
+        .panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            transition: all 0.3s ease;
+        }
+
+        .panel h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a1a1a;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 12px;
+        }
+
+        .panel h3 {
+            font-size: 18px;
+            margin-bottom: 12px;
+            color: #444;
+        }
+
+        /* Inputs & Buttons */
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.2s;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.1s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        /* Sections */
+        .subsection {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 20px;
+            border: 1px solid #e9ecef;
+        }
+
+        /* Preformatted Text */
+        pre {
+            background: #2d3436;
+            color: #dfe6e9;
+            padding: 12px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 13px;
+            margin: 0;
+        }
+
+        /* Canvas */
+        #processing canvas {
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            margin-top: 10px;
+            width: 100%;
+            height: 300px;
+            background: #fff;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.02);
+        }
+
+        /* Output text */
+        .subsection p {
+            margin: 8px 0;
+            display: flex;
+            justify-content: space-between;
+            color: #666;
+        }
+
+        .subsection span {
+            font-weight: 600;
+            color: #2d3436;
+        }
+    </style>
 </head>
 
 <body>
 
-  <main class="layout">
+    <div class="container">
 
-    <!-- LEFT PANEL -->
-    <section class="panel input-panel">
-      <h2>Input</h2>
+        <!-- ========================= -->
+        <!-- 1. INPUT PANEL -->
+        <!-- ========================= -->
+        <div class="panel" id="input-panel">
+            <h2>Input</h2>
 
-      <label>
-        Enter number of points (N):
-        <input type="number" id="nInput" />
-      </label>
-    </section>
+            <label>Enter number of points (N):</label>
+            <input type="number" id="numPoints" min="2" value="10" style="width: 100%; padding: 8px;">
 
-    <!-- CENTER PANEL -->
-    <section class="panel processing-panel">
-      <h2>Processing</h2>
-    </section>
+            <button onclick="generatePoints()" style="margin-top: 15px;">Generate Random Points</button>
 
-    <!-- RIGHT PANEL -->
-    <section class="panel output-panel">
-      <h2>Output</h2>
+            <div class="subsection">
+                <h3>Generated Points:</h3>
+                <pre id="generatedPoints"></pre>
+            </div>
+        </div>
 
-      <button id="advancedBtn">Advanced</button>
-    </section>
 
-  </main>
+
+        <!-- ========================= -->
+        <!-- 2. PROCESSING PANEL -->
+        <!-- ========================= -->
+        <div class="panel" id="processing">
+            <h2>Processing</h2>
+
+            <!-- Recursive Splitting -->
+            <div class="subsection">
+                <h3>Recursive Division</h3>
+                <canvas id="recCanvas"></canvas>
+                <p id="recInfo">Waiting for input...</p>
+            </div>
+
+            <!-- Strip Visualization -->
+            <div class="subsection">
+                <h3>Strip Visualization</h3>
+                <canvas id="stripCanvas"></canvas>
+                <p id="stripInfo">Strip will appear here...</p>
+            </div>
+
+            <!-- Distance Computation -->
+            <div class="subsection">
+                <h3>Distance Computation Tracker</h3>
+                <p>Total comparisons (Divide & Conquer): <span id="divComp">0</span></p>
+                <p>Total comparisons (Brute Force): <span id="bfComp">0</span></p>
+                <p>Comparisons saved: <span id="savedComp">0</span></p>
+                <p>Execution time: <span id="timeTaken">0 ms</span></p>
+
+                <canvas id="scaleGraph"></canvas>
+            </div>
+        </div>
+
+
+
+        <!-- ========================= -->
+        <!-- 3. OUTPUT PANEL -->
+        <!-- ========================= -->
+        <div class="panel" id="output-panel">
+            <h2>Output</h2>
+
+            <button id="advancedBtn">Advanced</button>
+
+            <div class="subsection">
+                <h3>Closest Pair</h3>
+                <p>Point 1: <span id="p1"></span></p>
+                <p>Point 2: <span id="p2"></span></p>
+                <p>Distance: <span id="finalDist"></span></p>
+            </div>
+
+            <div class="subsection">
+                <h3>Performance</h3>
+                <p>Total Comparisons: <span id="finalComp"></span></p>
+                <p>Execution Time: <span id="finalTime"></span></p>
+            </div>
+        </div>
+
+    </div>
+
+
+
+    <!-- ========================= -->
+    <!-- BASIC JS SKELETON -->
+    <!-- ========================= -->
+    <script>
+
+        function generatePoints() {
+            let n = parseInt(document.getElementById("numPoints").value);
+
+            let pts = [];
+            for (let i = 0; i < n; i++) {
+                pts.push({
+                    x: Math.random() * 500,
+                    y: Math.random() * 500
+                });
+            }
+
+            document.getElementById("generatedPoints").textContent = JSON.stringify(pts, null, 2);
+
+            // TODO: call visualization → split, strip, recursion
+        }
+
+    </script>
 
 </body>
+
 </html>
