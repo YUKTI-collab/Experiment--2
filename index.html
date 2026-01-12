@@ -168,6 +168,34 @@
             font-weight: 600;
             color: #2d3436;
         }
+
+        /* Pseudocode Styling */
+        .pseudocode-box {
+            background: #fff;
+            border: 2px solid #ccc;
+            /* Matches the solid border in the user image 0 */
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 12px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            color: #333;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .pseudocode-box h4 {
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 16px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 8px;
+        }
+
+        .pseudocode-box ol {
+            padding-left: 24px;
+            margin: 0;
+            line-height: 1.6;
+        }
     </style>
 </head>
 
@@ -184,11 +212,15 @@
             <label>Enter number of points (N):</label>
             <input type="number" id="numPoints" min="2" value="10" style="width: 100%; padding: 8px;">
 
-            <button onclick="generatePoints()" style="margin-top: 15px;">Generate Random Points</button>
+            <button onclick="generatePoints()" style="margin-top: 15px; margin-bottom: 10px;">Generate Random
+                Points</button>
+            <button id="startBtn" onclick="startVisualization()"
+                style="margin-bottom: 15px; background: #28a745; display: none;">Start Simulation</button>
 
             <div class="subsection">
                 <h3>Generated Points:</h3>
-                <pre id="generatedPoints"></pre>
+                <div id="generatedPoints"
+                    style="max-height: 150px; overflow-y: auto; font-size: 14px; line-height: 1.5; color: #555;"></div>
             </div>
         </div>
 
@@ -222,7 +254,19 @@
                 <p>Comparisons saved: <span id="savedComp">0</span></p>
                 <p>Execution time: <span id="timeTaken">0 ms</span></p>
 
-                <canvas id="scaleGraph"></canvas>
+                <div class="pseudocode-box">
+                    <h4>Pseudocode</h4>
+                    <ol>
+                        <li>Sort points according to X-coordinate</li>
+                        <li>Divide the set into two equal halves</li>
+                        <li>Recursively find smallest distances in both halves</li>
+                        <li>Let d = min(dist_left, dist_right)</li>
+                        <li>Create strip of points within distance d of midline</li>
+                        <li>Sort strip points according to Y-coordinate</li>
+                        <li>For each point in strip, check next 7 points</li>
+                        <li>Return min(d, strip_closest)</li>
+                    </ol>
+                </div>
             </div>
         </div>
 
@@ -234,7 +278,9 @@
         <div class="panel" id="output-panel">
             <h2>Output</h2>
 
-            <button id="advancedBtn">Advanced</button>
+            <!-- button onclick="window.location.reload()" style="background: linear-gradient(135deg, #dc3545, #c82333); margin-bottom: 16px;">Reset</button -->
+            <!-- We'll keep the Advanced button for now or remove if not needed. -->
+            <!-- Added Reset functionality via reload or clearing -->
 
             <div class="subsection">
                 <h3>Closest Pair</h3>
@@ -257,25 +303,7 @@
     <!-- ========================= -->
     <!-- BASIC JS SKELETON -->
     <!-- ========================= -->
-    <script>
-
-        function generatePoints() {
-            let n = parseInt(document.getElementById("numPoints").value);
-
-            let pts = [];
-            for (let i = 0; i < n; i++) {
-                pts.push({
-                    x: Math.random() * 500,
-                    y: Math.random() * 500
-                });
-            }
-
-            document.getElementById("generatedPoints").textContent = JSON.stringify(pts, null, 2);
-
-            // TODO: call visualization → split, strip, recursion
-        }
-
-    </script>
+    <script src="script.js"></script>
 
 </body>
 
