@@ -245,10 +245,17 @@ async function startVisualizationInternal() {
         drawPoint(recCtx, result.closest[0], '#28a745');
         drawPoint(recCtx, result.closest[1], '#28a745');
         drawLine(recCtx, result.closest[0], result.closest[1], '#28a745', 4);
+    //final answer in integer
+    
+        document.getElementById('p1').innerText =
+ `(${Math.round(result.closest[0].x)}, ${Math.round(result.closest[0].y)})`;
 
-        document.getElementById('p1').innerText = `(${result.closest[0].x.toFixed(1)}, ${result.closest[0].y.toFixed(1)})`;
-        document.getElementById('p2').innerText = `(${result.closest[1].x.toFixed(1)}, ${result.closest[1].y.toFixed(1)})`;
-        document.getElementById('finalDist').innerText = result.min_dist.toFixed(4);
+document.getElementById('p2').innerText =
+ `(${Math.round(result.closest[1].x)}, ${Math.round(result.closest[1].y)})`;
+
+document.getElementById('finalDist').innerText =
+ Math.round(result.min_dist);
+
     }
 
     // Calculate generic BF comparisons for N
@@ -285,6 +292,10 @@ function generatePoints() {
     // Format output: (x, y), (x, y)...
     const formattedPoints = points.map(p => `(${Math.round(p.x)}, ${Math.round(p.y)})`).join(', ');
     document.getElementById("generatedPoints").textContent = formattedPoints;
+    // Show Start & Reset Buttons
+    document.getElementById("startBtn").style.display = "block";
+    document.getElementById("resetBtn").style.display = "block";
+
 
     // Draw initial state
     clearCanvas(recCanvas);
@@ -314,6 +325,10 @@ window.startVisualization = async function () {
     }
     await startVisualizationInternal();
 };
+//reset simulation
+function resetSimulation() {
+    window.location.reload();
+}
 
 // Make globally available
 window.generatePoints = generatePoints;

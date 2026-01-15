@@ -216,14 +216,20 @@
                 Points</button>
             <button id="startBtn" onclick="startVisualization()"
                 style="margin-bottom: 15px; background: #28a745; display: none;">Start Simulation</button>
-
+            <!--RESET BUTTON -->
+    <button id="resetBtn"
+        onclick="resetSimulation()"
+        style="background: linear-gradient(135deg, #dc3545, #b02a37);
+               margin-bottom: 15px;
+               display: none;">
+        Reset
+    </button>
             <div class="subsection">
                 <h3>Generated Points:</h3>
                 <div id="generatedPoints"
                     style="max-height: 150px; overflow-y: auto; font-size: 14px; line-height: 1.5; color: #555;"></div>
             </div>
         </div>
-
 
 
         <!-- ========================= -->
